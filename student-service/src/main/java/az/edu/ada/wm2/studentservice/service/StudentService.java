@@ -51,6 +51,14 @@ public class StudentService {
         return toResponseDto(updatedStudent);
     }
 
+    public List<StudentResponseDto> searchByName(String name) {
+        return studentRepository
+                .findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(name, name)
+                .stream()
+                .map(this::toResponseDto)
+                .toList();
+    }
+
     public void deleteStudent(Long id) {
         Student student = findStudentOrThrow(id);
         studentRepository.delete(student);
