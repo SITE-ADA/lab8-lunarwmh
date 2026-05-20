@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="az.edu.ada.wm2.studentservice.StudentServiceApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-05-20T13:41:41.209Z" hostname="Mehribans-MacBook-Air-2.local" time="0.011">
+  <properties/>
+  <testcase name="basicTest()" classname="az.edu.ada.wm2.studentservice.StudentServiceApplicationTests" time="0.005"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

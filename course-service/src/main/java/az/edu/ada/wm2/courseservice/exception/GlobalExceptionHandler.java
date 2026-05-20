@@ -41,6 +41,12 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.BAD_GATEWAY, ex.getMessage(), request.getRequestURI());
     }
 
+    @ExceptionHandler(PrerequisiteNotMetException.class)
+    public ResponseEntity<ApiErrorResponse> handlePrerequisiteNotMet(PrerequisiteNotMetException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ApiErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage()));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> handleValidationError(
             MethodArgumentNotValidException ex,

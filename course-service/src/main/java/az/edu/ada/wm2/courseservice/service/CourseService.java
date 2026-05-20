@@ -1,10 +1,7 @@
 package az.edu.ada.wm2.courseservice.service;
 
 import az.edu.ada.wm2.courseservice.client.StudentFeignClient;
-import az.edu.ada.wm2.courseservice.exception.CourseNotFoundException;
-import az.edu.ada.wm2.courseservice.exception.EnrollmentAlreadyExistsException;
-import az.edu.ada.wm2.courseservice.exception.RemoteStudentNotFoundException;
-import az.edu.ada.wm2.courseservice.exception.StudentServiceCommunicationException;
+import az.edu.ada.wm2.courseservice.exception.*;
 import az.edu.ada.wm2.courseservice.model.dto.CourseRequestDto;
 import az.edu.ada.wm2.courseservice.model.dto.CourseResponseDto;
 import az.edu.ada.wm2.courseservice.model.dto.CourseStudentsResponseDto;
@@ -79,7 +76,15 @@ public class CourseService {
 
     public EnrollmentResponseDto enrollStudent(Long courseId, Long studentId) {
         log.debug("Enrolling student {} into course {}", studentId, courseId);
-        findCourseOrThrow(courseId);
+        Course course = findCourseOrThrow(courseId);
+
+        if (course.getPrerequisiteId() != null) {
+            boolean hasCompleted = enrollmentRepository
+                    .existsByCourseIdAndStudentId(course.getPrerequisiteId(), studentId);
+            if (!hasCompleted) {
+                throw new PrerequisiteNotMetException(course.getPrerequisiteId(), studentId);
+            }
+        }
 
         if (enrollmentRepository.existsByCourseIdAndStudentId(courseId, studentId)) {
             throw new EnrollmentAlreadyExistsException(courseId, studentId);
@@ -147,12 +152,15 @@ public class CourseService {
         return courseRepository.findById(id).orElseThrow(() -> new CourseNotFoundException(id));
     }
 
+
+
     private CourseResponseDto toCourseResponseDto(Course course) {
         return new CourseResponseDto(
                 course.getId(),
                 course.getTitle(),
                 course.getCode(),
-                course.getCredits()
+                course.getCredits(),
+                course.getPrerequisiteId()
         );
     }
 }
